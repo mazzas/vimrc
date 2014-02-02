@@ -1,4 +1,35 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Load package managed plug-ins
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set nocompatible              " be iMproved
+filetype off                  " required!
+
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+" let Vundle manage Vundle
+" required! 
+Bundle 'gmarik/vundle'
+
+" My bundles here:
+Bundle 'gerw/vim-latex-suite'
+Bundle 'bling/vim-airline'
+Bundle 'scrooloose/syntastic'
+Bundle 'ctrlp.vim'
+" Bundle 'Lokaltog/vim-easymotion'
+Bundle 'tpope/vim-fugitive'
+Bundle 'scrooloose/nerdtree'
+Bundle 'tpope/vim-vinegar'
+Bundle 'flazz/vim-colorschemes'
+Bundle 'mbbill/undotree'
+Bundle 'bling/vim-bufferline'
+" Bundle 'vim-scripts/taglist.vim'
+Bundle 'majutsushi/tagbar'
+Bundle 'tpope/vim-surround'
+Bundle 'edkolev/tmuxline.vim'
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Sets how many lines of history VIM has to remember
@@ -24,29 +55,6 @@ map <leader>e :e! ~/.vimrc<cr>
 
 " When vimrc is edited, reload it
 autocmd! bufwritepost vimrc source ~/.vimrc
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Load package managed plug-ins
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set nocompatible              " be iMproved
-filetype off                  " required!
-
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
-
-" let Vundle manage Vundle
-" required! 
-Bundle 'gmarik/vundle'
-
-" My bundles here:
-" install Airline
-Bundle 'tpope/vim-fugitive'
-" install Fugitive
-" install Vundle
-" install Nerdtree
-" install Vinegar
-Bundle 'flazz/vim-colorschemes'
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
@@ -87,13 +95,16 @@ set novisualbell
 set t_vb=
 set tm=500
 
+" If no files are specified, open Nerdtree
+autocmd vimenter * if !argc() | NERDTree | endif
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 syntax enable "Enable syntax hl
 " Set font according to system
-set gfn=Monospace\ 10
+"set gfn=Monospace\ 10
 set shell=/bin/bash
 
 if has("gui_running")
