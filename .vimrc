@@ -25,6 +25,28 @@ map <leader>e :e! ~/.vimrc<cr>
 " When vimrc is edited, reload it
 autocmd! bufwritepost vimrc source ~/.vimrc
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Load package managed plug-ins
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set nocompatible              " be iMproved
+filetype off                  " required!
+
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+" let Vundle manage Vundle
+" required! 
+Bundle 'gmarik/vundle'
+
+" My bundles here:
+" install Airline
+Bundle 'tpope/vim-fugitive'
+" install Fugitive
+" install Vundle
+" install Nerdtree
+" install Vinegar
+Bundle 'flazz/vim-colorschemes'
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
@@ -78,7 +100,7 @@ if has("gui_running")
   set guioptions-=T
   set t_Co=256
   set background=dark
-  colorscheme desert
+  colorscheme macvim
   " set nonu
 else
   colorscheme zellner
