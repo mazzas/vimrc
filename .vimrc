@@ -140,6 +140,7 @@ if has("gui_running")
   elseif has("gui_win32")
     set guifont=Consolas:h8:cANSI
     set guioptions-=T
+    set shellslash
   endif
 else
   colorscheme zellner
@@ -174,8 +175,8 @@ set undofile
 " => Text, tab and indent related
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set expandtab
-set shiftwidth=4
-set tabstop=4
+set shiftwidth=2
+set tabstop=2
 set smarttab
 
 set lbr
@@ -189,98 +190,23 @@ set wrap "Wrap lines
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => LaTeX mode configuration
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" function! SetupLatex(arg)
-"     if a:arg == 'pdf'
-"         let a:targetformat = 'pdf'
-"     elseif a:arg == 'dvi'
-"         let a:targetformat = 'dvi'
-"     elseif a:arg == ''
-"         if g:Tex_DefaultTargetFormat == 'dvi'
-"             let a:targetformat = 'pdf'
-"         else
-"             let a:targetformat = 'dvi'
-"         endif
-"     endif
-"  
-"     if a:targetformat == 'dvi'
-"         " target for latex
-"         let g:Tex_DefaultTargetFormat = 'dvi'
-"         " inverse search -- start gvim as "gvim --servername xdvi"
-"         "let g:Tex_CompileRule_dvi = 'latex --src -interaction nonstopmode $*'
-"         "let g:Tex_CompileRule_dvi = 'latex --src -interaction nonstopmode $*; if pgrep -fx "xdvi.bin -name xdvi -editor gvim --servername vim --remote +%l %f $*"; then wmctrl -a "xdvik:  $*"; fi;'
-"         let g:Tex_CompileRule_dvi = 'latex --src -interaction nonstopmode $*; if pgrep "xdvi.bin"; then wmctrl -a "xdvik:"; fi;'
-"         let g:Tex_ViewRule_dvi = 'xdvi -editor "gvim --servername vim --remote +\%l \%f" -watchfile 1 $* &'
-"         map \ld :execute '!xdvi -editor "gvim --servername '.v:servername.' --remote +\%l \%f" -sourceposition '.line(".").':'.col(".").expand("%").' '.expand(Tex_GetMainFileName(':r')).'.dvi >/dev/null&'<CR><CR>
-"     else " pdf
-"         let g:Tex_DefaultTargetFormat = 'pdf'
-"         let g:Tex_CompileRule_pdf = 'pdflatex -interaction nonstopmode $*; if pgrep -fx "xpdf -remote vimlatex $*.pdf"; then xpdf -remote vimlatex -reload && wmctrl -a "Xpdf: $*.pdf"; fi;'
-"         "let g:Tex_CompileRule_pdf = 'pdflatex -interaction nonstopmode $*; if pgrep -fx "xpdf -remote vimlatex $*.pdf"; then xpdf -remote vimlatex -reload -raise; fi;'
-"         let g:Tex_CompileRule_pdf = 'pdflatex -interaction nonstopmode $*; if pgrep -fx "xpdf -remote vimlatex $*.pdf"; then xpdf -remote vimlatex -reload && wmctrl -a "Xpdf: $*.pdf"; fi;'
-"         let g:Tex_ViewRule_pdf = 'xpdf -remote vimlatex'
-"     endif
-" endfunction
-" 
-" if 1
-"     :call SetupLatex('pdf')
-"     " let g:Tex_MultipleCompileFormats = 'dvi,pdf'
-"  
-"     " include cross referenced references also if they are cross referenced less
-"     " than two times
-"     let g:Tex_BibtexFlavor = 'bibtex -min-crossrefs=1'
-"     " let the cursor in the tex buffer if an error occured
-"     let g:Tex_GotoError = 0
-"     let g:Tex_IgnoredWarnings =
-"                 \'Underfull'."\n".
-"                 \'Overfull'."\n".
-"                 \'specifier changed to'."\n".
-"                 \'You have requested'."\n".
-"                 \'Missing number, treated as zero.'."\n".
-"                 \'There were undefined references'."\n".
-"                 \'Latex Warning:'."\n".
-"                 \'LaTeX Warning:' " float stuck
-"                 "\'Citation %.%# undefined'
-"     let g:Tex_IgnoreLevel = 8
-"     let g:Tex_FoldedEnvironments = 'frame,verbatim,comment,eq,gather,align,figure,table,thebibliography,keywords,abstract,titlepage'
-" endif
-
-
-" """""""""""""""""""""""""""""""
-" " => Visual mode related
-" """"""""""""""""""""""""""""""
-" " Really useful!
-" "  In visual mode when you press * or # to search for the current selection
-" vnoremap <silent> * :call VisualSearch('f')<CR>
-" vnoremap <silent> # :call VisualSearch('b')<CR>
-" 
-" " When you press gv you vimgrep after the selected text
-" vnoremap <silent> gv :call VisualSearch('gv')<CR>
-" map <leader>g :vimgrep // **/*.<left><left><left><left><left><left><left>
-" 
-" 
-" function! CmdLine(str)
-"   exe "menu Foo.Bar :" . a:str
-"   emenu Foo.Bar
-"   unmenu Foo
-" endfunction
-" " From an idea by Michael Naumann
-" function! VisualSearch(direction) range
-"   let l:saved_reg = @"
-"   execute "normal! vgvy"
-" 
-"   let l:pattern = escape(@", '\\/.*$^~[]')
-"   let l:pattern = substitute(l:pattern, "\n$", "",)
-" 
-"   if a:direction == 'b'
-"     execute "normal ?" . l:pattern . "^M"
-"   elseif a:direction == 'gv'
-"     call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
-"   elseif a:direction == 'f'
-"     execute "normal /" . l:pattern . "^M"
-"   endif
-" 
-"   let @/ = l:pattern
-"   let @" = l:saved_reg
-" endfunction
+let g:tex_flavor='latex'
+set iskeyword+=:
+let g:Tex_DefaultTargetFormat = 'pdf'
+let g:Tex_GotoError = 0
+let g:Tex_IgnoredWarnings =
+            \'Underfull'."\n".
+            \'Overfull'."\n".
+            \'specifier changed to'."\n".
+            \'You have requested'."\n".
+            \'Missing number, treated as zero.'."\n".
+            \'There were undefined references'."\n".
+            \'Latex Warning:'."\n".
+            \'LaTeX Warning:' " float stuck
+            \'Citation %.%# undefined'
+let g:Tex_IgnoreLevel = 8
+let g:Tex_FoldedEnvironments = 'frame,verbatim,comment,eq,gather,align,figure,table,thebibliography,keywords,abstract,titlepage'
+" let g:Tex_BibtexFlavor = 'bibtex -min-crossrefs=1'
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -346,33 +272,12 @@ map <leader>bd :Bclose<cr>
 " Close all the buffers
 map <leader>ba :1,300 bd!<cr>
 
-" Use the arrows to something usefull
-" map <right> :bn<cr>
-" map <left> :bp<cr>
-
 
 " """"""""""""""""""""""""""""""
 " " => Statusline
 " """"""""""""""""""""""""""""""
 " " Always show the statusline
 set laststatus=2
-" 
-" " Format the statusline
-" set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %l/%L:%c
-" 
-" 
-" function! CurDir()
-"     let curdir = substitute(getcwd(), '/Users/amir/', "~/", "g")
-"     return curdir
-" endfunction
-" 
-" function! HasPaste()
-"     if &paste
-"         return 'PASTE MODE  '
-"     else
-"         return ''
-"     endif
-" endfunction
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
