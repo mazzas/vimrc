@@ -35,6 +35,8 @@ Bundle 'edkolev/tmuxline.vim'
 " Sets how many lines of history VIM has to remember
 set history=700
 
+syntax enable "Enable syntax hl
+
 " Enable filetype plugin
 filetype plugin on
 filetype indent on
@@ -51,19 +53,22 @@ let g:mapleader = ","
 nmap <leader>w :w!<cr>
 
 " Fast editing of the .vimrc
-map <leader>e :e! ~/.vimrc<cr>
+map <leader>v :e! ~/.vimrc<cr>
 
 " When vimrc is edited, reload it
-autocmd! bufwritepost vimrc source ~/.vimrc
+autocmd! BufWritePost vimrc source ~/.vimrc
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Set 7 lines to the curors - when moving vertical..
-set so=7
+set so=7 "Give the cursor some room at the bottom and top.
 
 set nu  "Turn on line numbers
 
+set noshowmode
+let g:bufferline_echo = 0
+
+" set wildmode=longest:full
 set wildmenu "Turn on WiLd menu
 
 set ruler "Always show current position
@@ -77,12 +82,12 @@ set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
 
 set ignorecase "Ignore case when searching
-set smartcase
+set smartcase "Override ignorecase with CAPS
 
 set hlsearch "Highlight search things
 
 set incsearch "Make search act like search in modern browsers
-set nolazyredraw "Don't redraw while executing macros 
+" set nolazyredraw "Don't redraw while executing macros 
 
 set magic "Set magic on, for regular expressions
 
@@ -100,15 +105,24 @@ autocmd vimenter * if !argc() | NERDTree | endif
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Airline Plugin Customization
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" let g:airline#extensions#tabline#enabled = 1
+" let g:airline#extensions#branch#enabled = 1
+let g:airline_enable_branch     = 1
+let g:airline_enable_syntastic  = 1
+" let g:airline_powerline_fonts = 1
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-syntax enable "Enable syntax hl
 " Set font according to system
 "set gfn=Monospace\ 10
 set shell=/bin/bash
 
 if has("gui_running")
-  set guioptions-=T
+  " set guioptions-=T
   set t_Co=256
   set background=dark
   colorscheme macvim
@@ -160,98 +174,98 @@ set wrap "Wrap lines
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => LaTeX mode configuration
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! SetupLatex(arg)
-    if a:arg == 'pdf'
-        let a:targetformat = 'pdf'
-    elseif a:arg == 'dvi'
-        let a:targetformat = 'dvi'
-    elseif a:arg == ''
-        if g:Tex_DefaultTargetFormat == 'dvi'
-            let a:targetformat = 'pdf'
-        else
-            let a:targetformat = 'dvi'
-        endif
-    endif
- 
-    if a:targetformat == 'dvi'
-        " target for latex
-        let g:Tex_DefaultTargetFormat = 'dvi'
-        " inverse search -- start gvim as "gvim --servername xdvi"
-        "let g:Tex_CompileRule_dvi = 'latex --src -interaction nonstopmode $*'
-        "let g:Tex_CompileRule_dvi = 'latex --src -interaction nonstopmode $*; if pgrep -fx "xdvi.bin -name xdvi -editor gvim --servername vim --remote +%l %f $*"; then wmctrl -a "xdvik:  $*"; fi;'
-        let g:Tex_CompileRule_dvi = 'latex --src -interaction nonstopmode $*; if pgrep "xdvi.bin"; then wmctrl -a "xdvik:"; fi;'
-        let g:Tex_ViewRule_dvi = 'xdvi -editor "gvim --servername vim --remote +\%l \%f" -watchfile 1 $* &'
-        map \ld :execute '!xdvi -editor "gvim --servername '.v:servername.' --remote +\%l \%f" -sourceposition '.line(".").':'.col(".").expand("%").' '.expand(Tex_GetMainFileName(':r')).'.dvi >/dev/null&'<CR><CR>
-    else " pdf
-        let g:Tex_DefaultTargetFormat = 'pdf'
-        let g:Tex_CompileRule_pdf = 'pdflatex -interaction nonstopmode $*; if pgrep -fx "xpdf -remote vimlatex $*.pdf"; then xpdf -remote vimlatex -reload && wmctrl -a "Xpdf: $*.pdf"; fi;'
-        "let g:Tex_CompileRule_pdf = 'pdflatex -interaction nonstopmode $*; if pgrep -fx "xpdf -remote vimlatex $*.pdf"; then xpdf -remote vimlatex -reload -raise; fi;'
-        let g:Tex_CompileRule_pdf = 'pdflatex -interaction nonstopmode $*; if pgrep -fx "xpdf -remote vimlatex $*.pdf"; then xpdf -remote vimlatex -reload && wmctrl -a "Xpdf: $*.pdf"; fi;'
-        let g:Tex_ViewRule_pdf = 'xpdf -remote vimlatex'
-    endif
-endfunction
-
-if 1
-    :call SetupLatex('pdf')
-    " let g:Tex_MultipleCompileFormats = 'dvi,pdf'
- 
-    " include cross referenced references also if they are cross referenced less
-    " than two times
-    let g:Tex_BibtexFlavor = 'bibtex -min-crossrefs=1'
-    " let the cursor in the tex buffer if an error occured
-    let g:Tex_GotoError = 0
-    let g:Tex_IgnoredWarnings =
-                \'Underfull'."\n".
-                \'Overfull'."\n".
-                \'specifier changed to'."\n".
-                \'You have requested'."\n".
-                \'Missing number, treated as zero.'."\n".
-                \'There were undefined references'."\n".
-                \'Latex Warning:'."\n".
-                \'LaTeX Warning:' " float stuck
-                "\'Citation %.%# undefined'
-    let g:Tex_IgnoreLevel = 8
-    let g:Tex_FoldedEnvironments = 'frame,verbatim,comment,eq,gather,align,figure,table,thebibliography,keywords,abstract,titlepage'
-endif
-
-
-"""""""""""""""""""""""""""""""
-" => Visual mode related
-""""""""""""""""""""""""""""""
-" Really useful!
-"  In visual mode when you press * or # to search for the current selection
-vnoremap <silent> * :call VisualSearch('f')<CR>
-vnoremap <silent> # :call VisualSearch('b')<CR>
-
-" When you press gv you vimgrep after the selected text
-vnoremap <silent> gv :call VisualSearch('gv')<CR>
-map <leader>g :vimgrep // **/*.<left><left><left><left><left><left><left>
+" function! SetupLatex(arg)
+"     if a:arg == 'pdf'
+"         let a:targetformat = 'pdf'
+"     elseif a:arg == 'dvi'
+"         let a:targetformat = 'dvi'
+"     elseif a:arg == ''
+"         if g:Tex_DefaultTargetFormat == 'dvi'
+"             let a:targetformat = 'pdf'
+"         else
+"             let a:targetformat = 'dvi'
+"         endif
+"     endif
+"  
+"     if a:targetformat == 'dvi'
+"         " target for latex
+"         let g:Tex_DefaultTargetFormat = 'dvi'
+"         " inverse search -- start gvim as "gvim --servername xdvi"
+"         "let g:Tex_CompileRule_dvi = 'latex --src -interaction nonstopmode $*'
+"         "let g:Tex_CompileRule_dvi = 'latex --src -interaction nonstopmode $*; if pgrep -fx "xdvi.bin -name xdvi -editor gvim --servername vim --remote +%l %f $*"; then wmctrl -a "xdvik:  $*"; fi;'
+"         let g:Tex_CompileRule_dvi = 'latex --src -interaction nonstopmode $*; if pgrep "xdvi.bin"; then wmctrl -a "xdvik:"; fi;'
+"         let g:Tex_ViewRule_dvi = 'xdvi -editor "gvim --servername vim --remote +\%l \%f" -watchfile 1 $* &'
+"         map \ld :execute '!xdvi -editor "gvim --servername '.v:servername.' --remote +\%l \%f" -sourceposition '.line(".").':'.col(".").expand("%").' '.expand(Tex_GetMainFileName(':r')).'.dvi >/dev/null&'<CR><CR>
+"     else " pdf
+"         let g:Tex_DefaultTargetFormat = 'pdf'
+"         let g:Tex_CompileRule_pdf = 'pdflatex -interaction nonstopmode $*; if pgrep -fx "xpdf -remote vimlatex $*.pdf"; then xpdf -remote vimlatex -reload && wmctrl -a "Xpdf: $*.pdf"; fi;'
+"         "let g:Tex_CompileRule_pdf = 'pdflatex -interaction nonstopmode $*; if pgrep -fx "xpdf -remote vimlatex $*.pdf"; then xpdf -remote vimlatex -reload -raise; fi;'
+"         let g:Tex_CompileRule_pdf = 'pdflatex -interaction nonstopmode $*; if pgrep -fx "xpdf -remote vimlatex $*.pdf"; then xpdf -remote vimlatex -reload && wmctrl -a "Xpdf: $*.pdf"; fi;'
+"         let g:Tex_ViewRule_pdf = 'xpdf -remote vimlatex'
+"     endif
+" endfunction
+" 
+" if 1
+"     :call SetupLatex('pdf')
+"     " let g:Tex_MultipleCompileFormats = 'dvi,pdf'
+"  
+"     " include cross referenced references also if they are cross referenced less
+"     " than two times
+"     let g:Tex_BibtexFlavor = 'bibtex -min-crossrefs=1'
+"     " let the cursor in the tex buffer if an error occured
+"     let g:Tex_GotoError = 0
+"     let g:Tex_IgnoredWarnings =
+"                 \'Underfull'."\n".
+"                 \'Overfull'."\n".
+"                 \'specifier changed to'."\n".
+"                 \'You have requested'."\n".
+"                 \'Missing number, treated as zero.'."\n".
+"                 \'There were undefined references'."\n".
+"                 \'Latex Warning:'."\n".
+"                 \'LaTeX Warning:' " float stuck
+"                 "\'Citation %.%# undefined'
+"     let g:Tex_IgnoreLevel = 8
+"     let g:Tex_FoldedEnvironments = 'frame,verbatim,comment,eq,gather,align,figure,table,thebibliography,keywords,abstract,titlepage'
+" endif
 
 
-function! CmdLine(str)
-  exe "menu Foo.Bar :" . a:str
-  emenu Foo.Bar
-  unmenu Foo
-endfunction
-" From an idea by Michael Naumann
-function! VisualSearch(direction) range
-  let l:saved_reg = @"
-  execute "normal! vgvy"
-
-  let l:pattern = escape(@", '\\/.*$^~[]')
-  let l:pattern = substitute(l:pattern, "\n$", "",)
-
-  if a:direction == 'b'
-    execute "normal ?" . l:pattern . "^M"
-  elseif a:direction == 'gv'
-    call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
-  elseif a:direction == 'f'
-    execute "normal /" . l:pattern . "^M"
-  endif
-
-  let @/ = l:pattern
-  let @" = l:saved_reg
-endfunction
+" """""""""""""""""""""""""""""""
+" " => Visual mode related
+" """"""""""""""""""""""""""""""
+" " Really useful!
+" "  In visual mode when you press * or # to search for the current selection
+" vnoremap <silent> * :call VisualSearch('f')<CR>
+" vnoremap <silent> # :call VisualSearch('b')<CR>
+" 
+" " When you press gv you vimgrep after the selected text
+" vnoremap <silent> gv :call VisualSearch('gv')<CR>
+" map <leader>g :vimgrep // **/*.<left><left><left><left><left><left><left>
+" 
+" 
+" function! CmdLine(str)
+"   exe "menu Foo.Bar :" . a:str
+"   emenu Foo.Bar
+"   unmenu Foo
+" endfunction
+" " From an idea by Michael Naumann
+" function! VisualSearch(direction) range
+"   let l:saved_reg = @"
+"   execute "normal! vgvy"
+" 
+"   let l:pattern = escape(@", '\\/.*$^~[]')
+"   let l:pattern = substitute(l:pattern, "\n$", "",)
+" 
+"   if a:direction == 'b'
+"     execute "normal ?" . l:pattern . "^M"
+"   elseif a:direction == 'gv'
+"     call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
+"   elseif a:direction == 'f'
+"     execute "normal /" . l:pattern . "^M"
+"   endif
+" 
+"   let @/ = l:pattern
+"   let @" = l:saved_reg
+" endfunction
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -277,13 +291,6 @@ cnoremap <C-K>      <C-U>
 
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
-
-" Useful on some European keyboards
-map ½ $
-imap ½ $
-vmap ½ $
-cmap ½ $
-
 
 func! Cwd()
   let cwd = getcwd()
@@ -319,7 +326,7 @@ map <C-h> <C-W>h
 map <C-l> <C-W>l
 
 " Close the current buffer
-map <leader>bd :Bclose<cr>
+" map <leader>bd :Bclose<cr>
 
 " Close all the buffers
 map <leader>ba :1,300 bd!<cr>
@@ -329,28 +336,28 @@ map <leader>ba :1,300 bd!<cr>
 " map <left> :bp<cr>
 
 
-""""""""""""""""""""""""""""""
-" => Statusline
-""""""""""""""""""""""""""""""
-" Always hide the statusline
+" """"""""""""""""""""""""""""""
+" " => Statusline
+" """"""""""""""""""""""""""""""
+" " Always show the statusline
 set laststatus=2
-
-" Format the statusline
-set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %l/%L:%c
-
-
-function! CurDir()
-    let curdir = substitute(getcwd(), '/Users/amir/', "~/", "g")
-    return curdir
-endfunction
-
-function! HasPaste()
-    if &paste
-        return 'PASTE MODE  '
-    else
-        return ''
-    endif
-endfunction
+" 
+" " Format the statusline
+" set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %l/%L:%c
+" 
+" 
+" function! CurDir()
+"     let curdir = substitute(getcwd(), '/Users/amir/', "~/", "g")
+"     return curdir
+" endfunction
+" 
+" function! HasPaste()
+"     if &paste
+"         return 'PASTE MODE  '
+"     else
+"         return ''
+"     endif
+" endfunction
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -410,42 +417,9 @@ set guitablabel=%t
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Cope
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Do :help cope if you are unsure what cope is. It's super useful!
 map <leader>cc :botright cope<cr>
 map <leader>n :cn<cr>
 map <leader>p :cp<cr>
-
-
-""""""""""""""""""""""""""""""
-" => bufExplorer plugin
-""""""""""""""""""""""""""""""
-let g:bufExplorerDefaultHelp=0
-let g:bufExplorerShowRelativePath=1
-map <leader>o :BufExplorer<cr>
-
-
-""""""""""""""""""""""""""""""
-" => Minibuffer plugin
-""""""""""""""""""""""""""""""
-let g:miniBufExplModSelTarget = 1
-let g:miniBufExplorerMoreThanOne = 2
-let g:miniBufExplModSelTarget = 0
-let g:miniBufExplUseSingleClick = 1
-let g:miniBufExplMapWindowNavVim = 1
-let g:miniBufExplVSplit = 25
-let g:miniBufExplSplitBelow=1
-
-let g:bufExplorerSortBy = "name"
-
-autocmd BufRead,BufNew :call UMiniBufExplorer
-
-map <leader>u :TMiniBufExplorer<cr>
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Omni complete functions
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -459,15 +433,6 @@ map <leader>sn ]s
 map <leader>sp [s
 map <leader>sa zg
 map <leader>s? z=
-
-
-""""""""""""""""""""""""""""""
-" => Command-T
-""""""""""""""""""""""""""""""
-let g:CommandTMaxHeight = 15
-set wildignore+=*.o,*.obj,.git,*.pyc
-noremap <leader>j :CommandT<cr>
-noremap <leader>y :CommandTFlush<cr>
 
 
 """"""""""""""""""""""""""""""
