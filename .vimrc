@@ -4,6 +4,11 @@
 set nocompatible              " be iMproved
 filetype off                  " required!
 
+" The following does not do what I want it to.
+if has("win32")
+    set rtp+=~/ProgramFiles/Git/bin/
+    set rtp+=~/ProgramFiles/miktex/bin/
+endif
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
@@ -12,14 +17,15 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " My bundles here:
+Bundle 'scrooloose/nerdtree'
 Bundle 'gerw/vim-latex-suite'
 Bundle 'bling/vim-airline'
 Bundle 'scrooloose/syntastic'
+Bundle 'rbgrouleff/bclose.vim'
 Bundle 'ctrlp.vim'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'tpope/vim-fugitive'
 Bundle 'airblade/vim-gitgutter'
-Bundle 'scrooloose/nerdtree'
 Bundle 'tpope/vim-vinegar'
 Bundle 'flazz/vim-colorschemes'
 Bundle 'mbbill/undotree'
@@ -53,7 +59,11 @@ let g:mapleader = ","
 nmap <leader>w :w!<cr>
 
 " Fast editing of the .vimrc
-map <leader>v :e! ~/.vimrc<cr>
+if has("win32")
+    map <leader>v :e! ~/_gvimrc<cr>
+else
+    map <leader>v :e! ~/.vimrc<cr>
+endif
 
 " When vimrc is edited, reload it
 autocmd! BufWritePost vimrc source ~/.vimrc
@@ -118,20 +128,25 @@ let g:airline_enable_syntastic  = 1
 " => Colors and Fonts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Set font according to system
-"set gfn=Monospace\ 10
-set shell=/bin/bash
-
 if has("gui_running")
-  " set guioptions-=T
   set t_Co=256
   set background=dark
-  colorscheme macvim
-  " set nonu
+  colorscheme pleasant
+
+  if has("gui_gtk2")
+    set guifont=Inconsolata\ 12
+  elseif has("gui_macvim")
+    set guifont=Menlo\ Regular:h14
+  elseif has("gui_win32")
+    set guifont=Consolas:h8:cANSI
+    set guioptions-=T
+  endif
 else
   colorscheme zellner
   set background=dark
-  " set nonu
 endif
+
+set shell=/bin/bash
 
 set encoding=utf8
 try
@@ -326,7 +341,7 @@ map <C-h> <C-W>h
 map <C-l> <C-W>l
 
 " Close the current buffer
-" map <leader>bd :Bclose<cr>
+map <leader>bd :Bclose<cr>
 
 " Close all the buffers
 map <leader>ba :1,300 bd!<cr>
@@ -455,4 +470,11 @@ au BufRead,BufNewFile ~/buffer iab <buffer> xh1 ================================
 map <leader>pp :setlocal paste!<cr>
 
 map <leader>bb :cd ..<cr>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Override Filetypes
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Identify Monterey-Phoenix files
+" NOTE: This should probably be done another way.
+au BufRead,BufNewFile *.px setfiletype monterey
 
