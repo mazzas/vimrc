@@ -17,6 +17,7 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " My bundles here:
+Bundle 'sirver/ultisnips'
 Bundle 'scrooloose/nerdtree'
 Bundle 'gerw/vim-latex-suite'
 Bundle 'bling/vim-airline'
@@ -32,7 +33,7 @@ Bundle 'mbbill/undotree'
 Bundle 'bling/vim-bufferline'
 Bundle 'majutsushi/tagbar'
 Bundle 'tpope/vim-surround'
-Bundle 'edkolev/tmuxline.vim'
+" Bundle 'edkolev/tmuxline.vim'
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -205,7 +206,8 @@ let g:Tex_IgnoredWarnings =
             \'LaTeX Warning:' " float stuck
             \'Citation %.%# undefined'
 let g:Tex_IgnoreLevel = 8
-let g:Tex_FoldedEnvironments = 'frame,verbatim,comment,eq,gather,align,figure,table,thebibliography,keywords,abstract,titlepage'
+" let g:Tex_FoldedEnvironments = 'verbatim,comment,eq,gather,align,figure,table,thebibliography,keywords,abstract,titlepage'
+let g:Tex_FoldedSections = 'frame,part,chapter,section,subsection,subsection,paragraph'
 " let g:Tex_BibtexFlavor = 'bibtex -min-crossrefs=1'
 
 
@@ -271,6 +273,9 @@ map <leader>bd :Bclose<cr>
 
 " Close all the buffers
 map <leader>ba :1,300 bd!<cr>
+
+" Switch CWD to the directory of the open buffer
+map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 
 " """"""""""""""""""""""""""""""
