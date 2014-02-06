@@ -17,9 +17,9 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " My bundles here:
-Bundle 'sirver/ultisnips'
-Bundle 'scrooloose/nerdtree'
 Bundle 'gerw/vim-latex-suite'
+Bundle 'vim-scripts/UltiSnips'
+Bundle 'scrooloose/nerdtree'
 Bundle 'bling/vim-airline'
 Bundle 'scrooloose/syntastic'
 Bundle 'rbgrouleff/bclose.vim'
@@ -62,12 +62,13 @@ nmap <leader>w :w!<cr>
 " Fast editing of the .vimrc
 if has("win32")
     map <leader>v :e! ~/_gvimrc<cr>
+    autocmd! BufWritePost vimrc source ~/.vimrc
 else
     map <leader>v :e! ~/.vimrc<cr>
+    autocmd! BufWritePost vimrc source ~/.vimrc
 endif
 
 " When vimrc is edited, reload it
-autocmd! BufWritePost vimrc source ~/.vimrc
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
@@ -129,6 +130,12 @@ let g:airline_enable_syntastic  = 1
 " => UltiSnip Plugin Customization
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:UltiSnipsEditSplit = 'vertical'
+
+" Fix collision with vim-latex-suite
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+
+" Open folds with TODO markers.
+:au BufRead *.tex g/TODO/foldopen!
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -268,11 +275,11 @@ endfunc
 " map <c-space> ?
 map <silent> <leader><cr> :noh<cr>
 
-" Smart way to move btw. windows
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
+" " Smart way to move btw. windows
+" map <C-j> <C-W>j
+" map <C-k> <C-W>k
+" map <C-h> <C-W>h
+" map <C-l> <C-W>l
 
 " Close the current buffer
 map <leader>bd :Bclose<cr>
