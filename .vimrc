@@ -207,6 +207,7 @@ set wrap "Wrap lines
 let g:tex_flavor='latex'
 set iskeyword+=:
 let g:Tex_DefaultTargetFormat = 'pdf'
+let g:Tex_MultipleCompileFormats = 'pdf'
 let g:Tex_GotoError = 0
 let g:Tex_IgnoredWarnings =
             \'Underfull'."\n".
